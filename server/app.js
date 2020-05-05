@@ -31,12 +31,16 @@ const dbConnection = mongoose.connection;
 dbConnection.on("error", (err) => console.log(`Connection error: ${err}`));
 dbConnection.once("open", (err) => console.log(`Connected to DB`));
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("../client/build"));
-}
+app.use(
+  "/",
+  graphqlHTTP({
+    schema,
+    graphiql: true,
+  })
+);
 
 app.listen(PORT, (err) => {
   err
     ? console.log(err)
-    : console.log(`server has been started on port ${PORT}`);
+    : console.log(`server has been started on port ${process.env.NODE_ENV}`);
 });
