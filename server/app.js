@@ -32,10 +32,12 @@ const dbConnection = mongoose.connection;
 dbConnection.on("error", (err) => console.log(`Connection error: ${err}`));
 dbConnection.once("open", (err) => console.log(`Connected to DB`));
 
-app.use(express.static(path.join(__dirname, "../client/build")));
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../client/build"));
-});
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "../client/build")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/build"));
+  });
+}
 
 app.listen(PORT, (err) => {
   err
