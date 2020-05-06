@@ -3,6 +3,7 @@ const graphqlHTTP = require("express-graphql");
 const schema = require("./schema/schema");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 3005;
@@ -31,12 +32,9 @@ const dbConnection = mongoose.connection;
 dbConnection.on("error", (err) => console.log(`Connection error: ${err}`));
 dbConnection.once("open", (err) => console.log(`Connected to DB`));
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("../client/build"));
-}
-
+app.use(express.static(path.join(__dirname, "../client/build")));
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../build"));
+  res.sendFile(path.join(__dirname, "../client/build"));
 });
 
 app.listen(PORT, (err) => {
