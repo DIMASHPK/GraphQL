@@ -31,16 +31,16 @@ const dbConnection = mongoose.connection;
 dbConnection.on("error", (err) => console.log(`Connection error: ${err}`));
 dbConnection.once("open", (err) => console.log(`Connected to DB`));
 
-app.use(
-  "/",
-  graphqlHTTP({
-    schema,
-    graphiql: true,
-  })
-);
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("../client/build"));
+}
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../build"));
+});
 
 app.listen(PORT, (err) => {
   err
     ? console.log(err)
-    : console.log(`server has been started on port ${process.env.NODE_ENV}`);
+    : console.log(`server has been started on port ${PORT}`);
 });
